@@ -7,25 +7,44 @@ namespace RegexSchemaLib.Classes
 {
     public class RegexSchema
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="schema"></param>
-        /// <returns>(string? ResultString, ErrorModel?)</returns>
-        public (string?, ErrorModel?) SchemaReplace(SchemaModel schema)
+        #region ====== Boilerplate ======
+
+        private readonly SchemaModel Schema;
+        private bool SchemaValidated;
+        private readonly string PlaceholderPattern = "\\[.*?\\]";
+
+        public RegexSchema(SchemaModel schema, bool verifySchemaOnInit = false, bool throwOnVerifyOnInitError = true)
         {
-            (bool success, ErrorModel? error) = VerifySchema(schema);
+            if (verifySchemaOnInit)
+            {
+                (bool success, _) = ValidateSchema(schema);
+
+                if (!success)
+                    throw new AggregateException("Schema is invalid!");
+
+                SchemaValidated = success;
+            }
+
+            Schema = schema;
+        }
+
+        #endregion
+
+        #region ====== Public Methods ======
+
+        public (string?, ErrorModel?) SchemaReplace()
+        {
+            (bool success, ErrorModel? error) = ValidateSchema(Schema);
 
             if (!success)
                 return (null, error);
 
-            string? result = null;
+            string? result = Schema.RegexPattern;
 
-            foreach (PlaceholderModel placeholder in schema.Placeholders)
+            foreach (PlaceholderModel placeholder in Schema.Placeholders)
             {
                 //Laut meiner Recherche ist Regex Replace schneller als string.Replace und StringBuilder.Replace
-                //ToDo: Parameter RegexOptions.Compiled nutzen?
-                result = new Regex(schema.RegexPattern).Replace(placeholder.PlaceholderName, placeholder.ReplaceValue);
+                result = result.Replace(placeholder.Name, placeholder.ReplaceValue);
             }
 
             if (string.IsNullOrEmpty(result))
@@ -40,16 +59,18 @@ namespace RegexSchemaLib.Classes
             return (result, null);
         }
 
+        #endregion
+
         #region ====== Private Methods ======
 
-        protected (bool success, ErrorModel?) VerifySchema(SchemaModel schema)
+        protected (bool Success, ErrorModel?) ValidateSchema(SchemaModel schema)
         {
             foreach (PlaceholderModel placeholder in schema.Placeholders)
             {
                 if (string.IsNullOrEmpty(schema.SearchText) ||
                     string.IsNullOrEmpty(schema.RegexPattern) ||
                     string.IsNullOrEmpty(placeholder.RegexGroupName) ||
-                    string.IsNullOrEmpty(placeholder.PlaceholderName) ||
+                    string.IsNullOrEmpty(placeholder.Name) ||
                     string.IsNullOrEmpty(placeholder.ReplaceValue))
                 {
 
@@ -64,7 +85,7 @@ namespace RegexSchemaLib.Classes
                 }
 
 
-                if (!schema.RegexPattern.Contains(placeholder.PlaceholderName))
+                if (!schema.RegexPattern.Contains(placeholder.Name))
                 {
                     ErrorModel error = new()
                     {

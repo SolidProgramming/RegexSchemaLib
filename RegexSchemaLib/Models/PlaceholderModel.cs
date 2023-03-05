@@ -5,7 +5,7 @@ namespace RegexSchemaLib.Models
     public class PlaceholderModel
     {
         public string? RegexGroupName { get; set; }
-        public string? PlaceholderName { get; set; }
+        public string? Name { get; set; }
         public string? ReplaceValue { get; set; }
     }
 }

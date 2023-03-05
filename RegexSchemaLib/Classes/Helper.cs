@@ -7,7 +7,7 @@ namespace RegexSchemaLib.Classes
     {
         internal static List<string>? GetPropertyNames<T>(this T @class) where T : class
         {
-            PropertyInfo[] propertyInfos = @class.GetType().GetProperties(BindingFlags.Public);
+            PropertyInfo[] propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
             List<string>? propertyNames = new();
 
             foreach (PropertyInfo propertyInfo in propertyInfos)
