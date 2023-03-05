@@ -75,28 +75,29 @@ namespace RegexSchemaLib.Classes
 
         protected (bool Success, ErrorModel?) ValidateSchema(SchemaModel schema)
         {
+            ErrorModel error = new()
+            {
+                Type = Enums.ErrorType.Runtime,
+                Message = $"One of the following necessary values/parameter are null or empty:\n" +
+                        $"{GetPropertyNamesString<SchemaModel, PlaceholderModel>(schema, null)}"
+            };
+
+            if (string.IsNullOrEmpty(schema.SearchText))
+                return (false, error);
+
             foreach (PlaceholderModel placeholder in schema.Placeholders)
             {
-                if (string.IsNullOrEmpty(schema.SearchText) ||
-                    string.IsNullOrEmpty(schema.Pattern) ||
+                if (string.IsNullOrEmpty(schema.Pattern) ||
                     string.IsNullOrEmpty(placeholder.Name) ||
                     string.IsNullOrEmpty(placeholder.ReplaceValue))
                 {
-
-                    ErrorModel error = new()
-                    {
-                        Type = Enums.ErrorType.Runtime,
-                        Message = $"One of the following necessary values are null or empty:\n" +
-                        $"{GetPropertyNamesString(schema, placeholder)}"
-                    };
-
                     return (false, error);
                 }
 
 
                 if (!schema.Pattern.Contains(placeholder.Name))
                 {
-                    ErrorModel error = new()
+                     error = new()
                     {
                         Type = Enums.ErrorType.Runtime,
                         Message = $"One of the following necessary values are null or empty:\n" +

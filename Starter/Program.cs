@@ -61,33 +61,9 @@ schema2.Placeholders.Add(placeholderGK);
 #region schema 3
 SchemaModel schema3 = new()
 {
-    SearchText = "", //<== text is empty, library should throw error
-    Pattern = "Art. [NZ] [FW] [GK]"
+    SearchText = "",
+    Pattern = "THIS SCHEMA SHOULD THROW ERROR(Missing SearchText parameter)"
 };
-
-placeholderNZ = new()
-{
-    Name = "NZ",
-    ReplaceValue = "\\d+[a-z]{1,2}"
-};
-
-placeholderFW = new()
-{
-    Name = "FW",
-    ReplaceValue = "(IV.) lit. [a-z]{1,2}) Nr. \\d+",
-    ReplaceWithNamedGroup = true
-};
-
-placeholderGK = new()
-{
-    Name = "GK",
-    ReplaceValue = "(?:BGB|ZPO)",
-    ReplaceWithNamedGroup = true
-};
-
-schema3.Placeholders.Add(placeholderNZ);
-schema3.Placeholders.Add(placeholderFW);
-schema3.Placeholders.Add(placeholderGK);
 #endregion
 
 List<SchemaModel> schemas = new List<SchemaModel>();
