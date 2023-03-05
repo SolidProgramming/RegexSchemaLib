@@ -29,8 +29,10 @@ PlaceholderModel placeholderGK = new()
 schema.Placeholders.Add(placeholderNZ);
 schema.Placeholders.Add(placeholderGK);
 
-(string? result, ErrorModel? error) = new RegexSchema(schema).SchemaReplace();
+(string? result, ErrorModel? error) = new RegexSchema(schema).CreateRegexPattern();
 Console.WriteLine(result);
 
 
+Console.WriteLine("Press any key to exit");
+Console.ReadKey();
 

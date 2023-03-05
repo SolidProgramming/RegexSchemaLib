@@ -1,7 +1,8 @@
 ﻿using RegexSchemaLib.Models;
 using RegexSchemaLib.Structs;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
+using RegexSchemaLib.Enums;
+using RegexSchemaLib.Classes;
+//using RegexSchemaLib.Interfaces
 
 namespace RegexSchemaLib.Classes
 {
@@ -32,7 +33,7 @@ namespace RegexSchemaLib.Classes
 
         #region ====== Public Methods ======
 
-        public (string?, ErrorModel?) SchemaReplace()
+        public (string?, ErrorModel?) CreateRegexPattern()
         {
             (bool success, ErrorModel? error) = ValidateSchema(Schema);
 
@@ -43,7 +44,6 @@ namespace RegexSchemaLib.Classes
 
             foreach (PlaceholderModel placeholder in Schema.Placeholders)
             {
-                //Laut meiner Recherche ist Regex Replace schneller als string.Replace und StringBuilder.Replace
                 result = result.Replace(placeholder.Name, placeholder.ReplaceValue);
             }
 
