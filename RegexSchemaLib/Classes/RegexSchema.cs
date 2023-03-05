@@ -2,6 +2,7 @@
 using RegexSchemaLib.Structs;
 using RegexSchemaLib.Enums;
 using RegexSchemaLib.Classes;
+using System.Text.RegularExpressions;
 //using RegexSchemaLib.Interfaces
 
 namespace RegexSchemaLib.Classes
@@ -12,7 +13,6 @@ namespace RegexSchemaLib.Classes
 
         private readonly SchemaModel Schema;
         private bool SchemaValidated;
-        private readonly string PlaceholderPattern = "\\[.*?\\]";
 
         public RegexSchema(SchemaModel schema, bool verifySchemaOnInit = false, bool throwOnVerifyOnInitError = true)
         {
@@ -35,16 +35,24 @@ namespace RegexSchemaLib.Classes
 
         public (string?, ErrorModel?) CreateRegexPattern()
         {
-            (bool success, ErrorModel? error) = ValidateSchema(Schema);
+            if (!SchemaValidated)
+            {
+                (bool success, ErrorModel? error) = ValidateSchema(Schema);
+                if (!success)
+                    return (null, error);
+            }
 
-            if (!success)
-                return (null, error);
-
-            string? result = Schema.RegexPattern;
+            string? result = Schema.Pattern;
 
             foreach (PlaceholderModel placeholder in Schema.Placeholders)
             {
-                result = result.Replace(placeholder.Name, placeholder.ReplaceValue);
+                if (placeholder.ReplaceWithNamedGroup)
+                {
+                    placeholder.ReplaceValue = $"(?'{placeholder.Name}'{placeholder.ReplaceValue})";
+                }
+
+                string placeholderPattern = $"[{placeholder.Name}]";
+                result = result.Replace(placeholderPattern, placeholder.ReplaceValue);
             }
 
             if (string.IsNullOrEmpty(result))
@@ -70,8 +78,7 @@ namespace RegexSchemaLib.Classes
             foreach (PlaceholderModel placeholder in schema.Placeholders)
             {
                 if (string.IsNullOrEmpty(schema.SearchText) ||
-                    string.IsNullOrEmpty(schema.RegexPattern) ||
-                    string.IsNullOrEmpty(placeholder.RegexGroupName) ||
+                    string.IsNullOrEmpty(schema.Pattern) ||
                     string.IsNullOrEmpty(placeholder.Name) ||
                     string.IsNullOrEmpty(placeholder.ReplaceValue))
                 {
@@ -87,7 +94,7 @@ namespace RegexSchemaLib.Classes
                 }
 
 
-                if (!schema.RegexPattern.Contains(placeholder.Name))
+                if (!schema.Pattern.Contains(placeholder.Name))
                 {
                     ErrorModel error = new()
                     {
