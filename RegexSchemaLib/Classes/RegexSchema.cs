@@ -20,7 +20,7 @@ namespace RegexSchemaLib.Classes
             {
                 (bool success, _) = ValidateSchema(schema);
 
-                if (!success)
+                if (!success && throwOnVerifyOnInitError)
                     throw new AggregateException("Schema is invalid!");
 
                 SchemaValidated = success;
@@ -58,6 +58,8 @@ namespace RegexSchemaLib.Classes
 
             return (result, null);
         }
+
+
 
         #endregion
 

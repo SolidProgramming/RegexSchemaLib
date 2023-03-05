@@ -40,10 +40,12 @@ if (error is not null)
     $"\tMessage: {error.Value.Message}";
 }
 
-Console.WriteLine($"Result:\n" +
-    $"Pattern: {result}" +
+Console.WriteLine(
+    "Pattern:\n" +
+    $"\tresult: {result}\n" +
+    $"\told pattern: {schema.RegexPattern}\n" +
     $"{(error == null ? "" : errorText)}" +
-    $"\n\n");
+    "\n\n");
 
 Console.WriteLine("Press any key to exit");
 Console.ReadKey();
