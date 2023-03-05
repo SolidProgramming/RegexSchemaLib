@@ -81,6 +81,7 @@ foreach (SchemaModel _schema in schemas)
     }
 
     (string? result, ErrorModel? error) = new RegexSchema(_schema).CreateRegexPattern();
+
     string errorText = "";
 
     if (error is not null)

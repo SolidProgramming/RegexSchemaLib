@@ -14,7 +14,7 @@ namespace RegexSchemaLib.Classes
         private readonly SchemaModel Schema;
         private bool SchemaValidated;
 
-        public RegexSchema(SchemaModel schema, bool verifySchemaOnInit = false, bool throwOnVerifyOnInitError = true)
+        public RegexSchema(SchemaModel schema, bool verifySchemaOnInit = true, bool throwOnVerifyOnInitError = false)
         {
             if (verifySchemaOnInit)
             {
