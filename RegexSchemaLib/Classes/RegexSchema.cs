@@ -67,8 +67,6 @@ namespace RegexSchemaLib.Classes
             return (result, null);
         }
 
-
-
         #endregion
 
         #region ====== Private Methods ======

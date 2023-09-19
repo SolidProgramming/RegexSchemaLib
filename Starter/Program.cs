@@ -72,8 +72,12 @@ schemas.Add(schema);
 schemas.Add(schema2);
 schemas.Add(schema3);
 
+int i = 0;
+
 foreach (SchemaModel _schema in schemas)
 {
+    Console.WriteLine($"Schema #{i}:\n");
+
     foreach (PlaceholderModel placeholder in _schema.Placeholders)
     {
         Console.WriteLine(
@@ -97,6 +101,8 @@ foreach (SchemaModel _schema in schemas)
         $"\tschema: {_schema.Pattern}\n" +
         $"{(error == null ? "" : errorText)}");
     Console.WriteLine("---------------------------------------------------------------------------------");
+
+    i++;
 }
 
 Console.WriteLine("\nPress any key to exit");
