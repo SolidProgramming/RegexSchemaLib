@@ -3,12 +3,18 @@ using System.Text;
 
 namespace RegexSchemaLib.Classes
 {
-    internal static class Helper
+    public static class Helper
     {
-        internal static List<string>? GetPropertyNames<T>(this T @class) where T : class
+        /// <summary>
+        /// Methode zum auslesen der enthaltenen Eigenschaften einer Klasse mittels Reflection
+        /// </summary>
+        /// <typeparam name="T">(T) Typ</typeparam>
+        /// <param name="class">(class) Klasse</param>
+        /// <returns>(List<string>) Liste der enthaltenen Eigenschaften der Klasse</returns>
+        public static List<string>? GetPropertyNames<T>() where T : class
         {
-            PropertyInfo[] propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
-            List<string>? propertyNames = new();
+            PropertyInfo[] propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic);
+            List<string> propertyNames = new();
 
             foreach (PropertyInfo propertyInfo in propertyInfos)
             {
